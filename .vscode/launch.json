@@ -1,0 +1,38 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "command": "npx playwright test",
+      "name": "Run UIBasicTest",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npx playwright test e2e/Calendar.spec.js",
+      "name": "Run CalendarTest",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npx playwright test e2e/MoreValidation.spec.js",
+      "name": "Run Validations",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npx playwright test e2e/WebAPIPart1.spec.js",
+      "name": "Run APIP1",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npx playwright test e2e/ExcelTest.spec.js",
+      "name": "Run ExcelTest",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}

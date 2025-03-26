@@ -1,0 +1,22 @@
+[
+  {
+    "testCaseNo": 1,
+    "custName": "Madesh",
+    "emailId": "testmadu@gmail.com",
+    "password": "Testmadu@123",
+    "productName": "ADIDAS ORIGINAL",
+    "couponCode": "rahulshettyacademy",
+    "country": " India",
+    "countryParText": "Ind"
+  },
+  {
+    "testCaseNo": 2,
+    "custName": "Mohan",
+    "emailId": "MohanMach@gmail.com",
+    "password": "NaN@1234",
+    "productName": "IPHONE 13 PRO",
+    "couponCode": "rahulshettyacademy",
+    "country": " Japan",
+    "countryParText": "Jap"
+  }
+]

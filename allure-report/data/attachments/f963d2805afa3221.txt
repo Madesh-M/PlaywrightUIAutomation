@@ -1,0 +1,82 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Login and order a product in RSAcademy website - 1
+- Location: D:\Playwright\Projects\PlaywrightTestProject\e2e\ClientAppPageObject.spec.js:9:8
+
+# Error details
+
+```
+Error: locator.waitFor: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('.ta-results') to be visible
+
+    at CheckoutPage.validateEmailAndSelectCountry (D:\Playwright\Projects\PlaywrightTestProject\pageobjects\CheckoutPage.js:37:31)
+    at D:\Playwright\Projects\PlaywrightTestProject\e2e\ClientAppPageObject.spec.js:45:5
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from "@playwright/test";
+   2 |
+   3 | class CheckoutPage {
+   4 |   constructor(page) {
+   5 |     this.page = page;
+   6 |     this.cardExpDateEle = page.locator("select.ddl");
+   7 |     this.cardCVVAndCouponEle = page.locator("div.small input");
+   8 |     this.customerNameEle = page.locator("input[class='input txt']");
+   9 |     this.applyCouponBtn = page.locator("button:has-text('Apply Coupon')");
+  10 |     this.actEmailIDDisplayedEle = page.locator("label[style*='lightgray']");
+  11 |     this.couponSuccessMsgele = page.locator("p[style='color: green;']");
+  12 |     this.countryNameDynamicDPEle = page.locator(
+  13 |       "[placeholder='Select Country']"
+  14 |     );
+  15 |     this.countryOptions = page.locator(".ta-results");
+  16 |     this.submitBtn = page.locator("a.action__submit");
+  17 |   }
+  18 |
+  19 |   async provideCustomerDetailsAndCouponCode(custName, couponCode) {
+  20 |     await this.cardExpDateEle.first().selectOption("01");
+  21 |     await this.cardExpDateEle.last().selectOption("18");
+  22 |     await this.cardCVVAndCouponEle.first().fill("012");
+  23 |     await this.customerNameEle.last().fill(custName);
+  24 |     await this.cardCVVAndCouponEle.last().fill(couponCode);
+  25 |     await this.applyCouponBtn.click();
+  26 |     const couponSuccessMsg = await this.couponSuccessMsgele.textContent();
+  27 |     console.log(couponSuccessMsg);
+  28 |     await expect(this.couponSuccessMsgele).toHaveText("* Coupon Applied");
+  29 |   }
+  30 |
+  31 |   async validateEmailAndSelectCountry(emailId, initText, country) {
+  32 |     await this.actEmailIDDisplayedEle.waitFor();
+  33 |     await expect(this.actEmailIDDisplayedEle).toHaveText(emailId);
+  34 |     await this.countryNameDynamicDPEle.pressSequentially(initText, {
+  35 |       delay: 100,
+  36 |     });
+> 37 |     await this.countryOptions.waitFor();
+     |                               ^ Error: locator.waitFor: Target page, context or browser has been closed
+  38 |     const countryDrpDwnCount = await this.countryOptions
+  39 |       .locator("button")
+  40 |       .count();
+  41 |     for (let i = 0; i < countryDrpDwnCount; i++) {
+  42 |       let countryText = await this.countryOptions
+  43 |         .locator("button")
+  44 |         .nth(i)
+  45 |         .textContent();
+  46 |       if (countryText === country) {
+  47 |         await this.countryOptions.locator("button").nth(i).click();
+  48 |         break;
+  49 |       }
+  50 |     }
+  51 |     await this.submitBtn.click();
+  52 |   }
+  53 | }
+  54 | module.exports = { CheckoutPage };
+  55 |
+```

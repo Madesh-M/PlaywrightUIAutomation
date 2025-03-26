@@ -1,0 +1,4 @@
+user was created!! and user name is wiqm igai
+arrayElement 0 : ZARA COAT 3
+arrayElement 1 : ADIDAS ORIGINAL
+done

@@ -1,0 +1,157 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: @web First Playwright test
+- Location: D:\Playwright\Projects\PlaywrightTestProject\e2e\UIBasictest.spec.js:7:5
+
+# Error details
+
+```
+Error: locator.textContent: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('div.card-body h4 a').first()
+
+    at D:\Playwright\Projects\PlaywrightTestProject\e2e\UIBasictest.spec.js:31:43
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from "@playwright/test"; //importing module
+   2 | import { randStr } from "../utils/Utilities";
+   3 | import { exit } from "process";
+   4 |
+   5 | //test('test name', function(){});
+   6 | 9;
+   7 | test("@web First Playwright test", async ({ browser }) => {
+   8 |   //using context, browser state like plugins can be provided instead of using new and empty browser
+   9 |   //Step 8-9 can be option based on your usage- if you don't need any special browser sessions including cookie or plugins directly go to Step 10
+   10 |   const context = await browser.newContext();
+   11 |   const page = await context.newPage();
+   12 |   const username = page.locator("input#username");
+   13 |   const password = page.locator("[name='password']");
+   14 |   const signIn = page.locator("input.btn-md");
+   15 |   const errMessageEle = page.locator("[style*='block']");
+   16 |   const productTitles = page.locator("div.card-body h4 a");
+   17 |
+   18 |   await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+   19 |   //provides title
+   20 |   console.log(await page.title());
+   21 |   //validates whether page title is what we provide and return boolean
+   22 |   await expect(page).toHaveTitle("LoginPage Practise | Rahul Shetty Academy");
+   23 |   // xpath or css selectors(predominantly used) are used
+   24 |   await username.pressSequentially("rahulshettyacademy", { delay: 100 });
+   25 |   await password.pressSequentially("learning", { delay: 100 });
+   26 |   await signIn.click();
+   27 |   // const errText = await errMessageEle.textContent();
+   28 |   // console.log(errText);
+   29 |   // await expect(errMessageEle).toContainText("Incorrect username/password");
+   30 |
+>  31 |   console.log(await productTitles.first().textContent());
+      |                                           ^ Error: locator.textContent: Target page, context or browser has been closed
+   32 |   // console.log(await productTitles.nth(1).textContent());
+   33 |   // console.log(await productTitles.last().textContent());
+   34 |
+   35 |   const allTitles = await productTitles.allTextContents();
+   36 |
+   37 |   for (let i = 0; i < allTitles.length; i++) {
+   38 |     console.log("arrayElement " + i + " : " + allTitles[i]);
+   39 |     if (allTitles[i] == "Blackberry") {
+   40 |       await productTitles.nth(i).click();
+   41 |       console.log("done");
+   42 |     }
+   43 |   }
+   44 | });
+   45 |
+   46 | test("@web Register and login user to RSWebsite", async ({ browser }) => {
+   47 |   const context = await browser.newContext();
+   48 |   const page = await context.newPage();
+   49 |   const registerLink = page.locator("div.p-5 p a");
+   50 |   const firstNameEle = page.locator("input#firstName");
+   51 |   const lastNameEle = page.locator("input#lastName");
+   52 |   const emailIdEle = page.locator("[placeholder='email@example.com']");
+   53 |   const phoneNumEle = page.locator("[formcontrolname='userMobile']");
+   54 |   const occupationEle = page.locator("select[formcontrolname='occupation']");
+   55 |   const genderEle = page.locator("input[value='Male']");
+   56 |   const passwordEle = page.locator("#userPassword");
+   57 |   const confirmPasswordEle = page.locator("#confirmPassword");
+   58 |   const ageConfCheckboxEle = page.locator("input[type='checkbox']");
+   59 |   const registerButtonEle = page.locator("input[value='Register']");
+   60 |   const errMesageEle = page.locator("div#toast-container div[role='alert']");
+   61 |   const userCreatedSuccessMsg = page.locator("h1.headcolor");
+   62 |   const loginButtonAfterRegEle = page.locator("div.login-wrapper button");
+   63 |   const loginButton = page.locator("input#login");
+   64 |   const productHeadingElems = page.locator("div.card-body h5");
+   65 |   const viewButtonElems = page.locator("button.w-40");
+   66 |
+   67 |   const firstName = await randStr(4);
+   68 |   const lastName = await randStr(4);
+   69 |   const emailText = firstName + lastName + "@gmail.com";
+   70 |   const password =
+   71 |     firstName.charAt(0).toUpperCase() + firstName.slice(1) + lastName + "@123";
+   72 |   let errMessage = "";
+   73 |
+   74 |   await page.goto("https://rahulshettyacademy.com/client/");
+   75 |   await expect(page).toHaveTitle("Let's Shop");
+   76 |
+   77 |   //Register
+   78 |   await registerLink.click();
+   79 |   await expect(page).toHaveURL(
+   80 |     "https://rahulshettyacademy.com/client/auth/register"
+   81 |   );
+   82 |
+   83 |   await firstNameEle.pressSequentially(firstName, { delay: 100 });
+   84 |   await lastNameEle.pressSequentially(lastName, { delay: 100 });
+   85 |   await emailIdEle.pressSequentially(emailText, { delay: 100 });
+   86 |   await phoneNumEle.pressSequentially("9998880000", { delay: 100 });
+   87 |   await occupationEle.selectOption("Engineer");
+   88 |   await genderEle.click();
+   89 |   await passwordEle.pressSequentially(password, { delay: 100 });
+   90 |   await confirmPasswordEle.pressSequentially(password, { delay: 100 });
+   91 |   await ageConfCheckboxEle.click();
+   92 |   await registerButtonEle.click();
+   93 |
+   94 |   try {
+   95 |     errMessage = await errMesageEle.textContent({ timeout: 4000 });
+   96 |   } catch (err) {
+   97 |     console.error("error element was not found");
+   98 |   }
+   99 |
+  100 |   if (errMessage.length > 0) {
+  101 |     console.log("user was not created due to following error: " + errMessage);
+  102 |     await page.close();
+  103 |   } else {
+  104 |     console.log(
+  105 |       "user was created!! and user name is " + firstName + " " + lastName
+  106 |     );
+  107 |     await expect(userCreatedSuccessMsg).toHaveText(
+  108 |       "Account Created Successfully"
+  109 |     );
+  110 |     await loginButtonAfterRegEle.click();
+  111 |   }
+  112 |
+  113 |   //Login
+  114 |   await emailIdEle.pressSequentially(emailText, { delay: 100 });
+  115 |   await passwordEle.pressSequentially(password, { delay: 100 });
+  116 |   await loginButton.click();
+  117 |
+  118 |   //await page.waitForLoadState("networkidle");
+  119 |   await viewButtonElems.first().waitFor();
+  120 |   const allProductTitles = await productHeadingElems.allTextContents();
+  121 |   for (let i = 0; i < allProductTitles.length; i++) {
+  122 |     console.log("arrayElement " + i + " : " + allProductTitles[i]);
+  123 |     if (allProductTitles[i] == "ADIDAS ORIGINAL") {
+  124 |       await viewButtonElems.nth(i).click();
+  125 |       break;
+  126 |     }
+  127 |   }
+  128 |
+  129 |   console.log("done");
+  130 | });
+  131 |
+```

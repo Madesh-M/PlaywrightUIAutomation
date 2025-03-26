@@ -1,0 +1,6 @@
+arrayElement 0 : ZARA COAT 3
+arrayElement 1 : ADIDAS ORIGINAL
+arrayElement 2 : IPHONE 13 PRO
+* Coupon Applied
+67dc13bfc019fb1ad630663d
+done

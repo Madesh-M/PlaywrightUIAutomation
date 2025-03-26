@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","8523","Upload download excel validation","","Thu Mar 20 18:48:30 IST 2025","passed","Thu Mar 20 18:48:39 IST 2025","","ExcelTest.spec.js","",""
+"","20747","Login and order a product in RSAcademy website - 2","","Thu Mar 20 18:48:47 IST 2025","passed","Thu Mar 20 18:49:08 IST 2025","","ClientAppPageObject.spec.js","",""
+"","16495","Login and order a product in RSAcademy website - 1","","Thu Mar 20 18:48:28 IST 2025","failed","Thu Mar 20 18:48:45 IST 2025","","ClientAppPageObject.spec.js","",""

@@ -1,0 +1,20 @@
+const { test, expect } = require("@playwright/test");
+
+class ConfirmationPage {
+  constructor(page) {
+    this.page = page;
+    this.orderIdEle = page.locator("td.em-spacer-1 label.ng-star-inserted");
+    this.confirmBtn = page.locator("button[routerlink*='myorders']");
+  }
+  async getOrderIdAndClickOnConfirm() {
+    await expect(this.page.locator("h1")).toHaveText(
+      " Thankyou for the order. "
+    );
+    const orderId = await this.orderIdEle.textContent();
+    const orderIdComp = orderId.split(" ")[2];
+    console.log(orderIdComp);
+    await this.confirmBtn.click();
+    return orderIdComp;
+  }
+}
+module.exports = { ConfirmationPage };

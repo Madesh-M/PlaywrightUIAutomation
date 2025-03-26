@@ -1,0 +1,237 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: @web UI Controls
+- Location: D:\Playwright\Projects\PlaywrightTestProject\e2e\UIBasictest.spec.js:132:5
+
+# Error details
+
+```
+Error: locator.click: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('button#okayBtn')
+    - locator resolved to <button id="okayBtn" autofocus="" type="button" class="btn btn-success">Okay</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    - waiting for element to be visible, enabled and stable
+    - element is not visible
+  - retrying click action
+    - waiting 100ms
+
+    at D:\Playwright\Projects\PlaywrightTestProject\e2e\UIBasictest.spec.js:151:26
+```
+
+# Test source
+
+```ts
+   51 |   const lastNameEle = page.locator("input#lastName");
+   52 |   const emailIdEle = page.locator("[placeholder='email@example.com']");
+   53 |   const phoneNumEle = page.locator("[formcontrolname='userMobile']");
+   54 |   const occupationEle = page.locator("select[formcontrolname='occupation']");
+   55 |   const genderEle = page.locator("input[value='Male']");
+   56 |   const passwordEle = page.locator("#userPassword");
+   57 |   const confirmPasswordEle = page.locator("#confirmPassword");
+   58 |   const ageConfCheckboxEle = page.locator("input[type='checkbox']");
+   59 |   const registerButtonEle = page.locator("input[value='Register']");
+   60 |   const errMesageEle = page.locator("div#toast-container div[role='alert']");
+   61 |   const userCreatedSuccessMsg = page.locator("h1.headcolor");
+   62 |   const loginButtonAfterRegEle = page.locator("div.login-wrapper button");
+   63 |   const loginButton = page.locator("input#login");
+   64 |   const productHeadingElems = page.locator("div.card-body h5");
+   65 |   const viewButtonElems = page.locator("button.w-40");
+   66 |
+   67 |   const firstName = await randStr(4);
+   68 |   const lastName = await randStr(4);
+   69 |   const emailText = firstName + lastName + "@gmail.com";
+   70 |   const password =
+   71 |     firstName.charAt(0).toUpperCase() + firstName.slice(1) + lastName + "@123";
+   72 |   let errMessage = "";
+   73 |
+   74 |   await page.goto("https://rahulshettyacademy.com/client/");
+   75 |   await expect(page).toHaveTitle("Let's Shop");
+   76 |
+   77 |   //Register
+   78 |   await registerLink.click();
+   79 |   await expect(page).toHaveURL(
+   80 |     "https://rahulshettyacademy.com/client/auth/register"
+   81 |   );
+   82 |
+   83 |   await firstNameEle.pressSequentially(firstName, { delay: 100 });
+   84 |   await lastNameEle.pressSequentially(lastName, { delay: 100 });
+   85 |   await emailIdEle.pressSequentially(emailText, { delay: 100 });
+   86 |   await phoneNumEle.pressSequentially("9998880000", { delay: 100 });
+   87 |   await occupationEle.selectOption("Engineer");
+   88 |   await genderEle.click();
+   89 |   await passwordEle.pressSequentially(password, { delay: 100 });
+   90 |   await confirmPasswordEle.pressSequentially(password, { delay: 100 });
+   91 |   await ageConfCheckboxEle.click();
+   92 |   await registerButtonEle.click();
+   93 |
+   94 |   try {
+   95 |     errMessage = await errMesageEle.textContent({ timeout: 4000 });
+   96 |   } catch (err) {
+   97 |     console.error("error element was not found");
+   98 |   }
+   99 |
+  100 |   if (errMessage.length > 0) {
+  101 |     console.log("user was not created due to following error: " + errMessage);
+  102 |     await page.close();
+  103 |   } else {
+  104 |     console.log(
+  105 |       "user was created!! and user name is " + firstName + " " + lastName
+  106 |     );
+  107 |     await expect(userCreatedSuccessMsg).toHaveText(
+  108 |       "Account Created Successfully"
+  109 |     );
+  110 |     await loginButtonAfterRegEle.click();
+  111 |   }
+  112 |
+  113 |   //Login
+  114 |   await emailIdEle.pressSequentially(emailText, { delay: 100 });
+  115 |   await passwordEle.pressSequentially(password, { delay: 100 });
+  116 |   await loginButton.click();
+  117 |
+  118 |   //await page.waitForLoadState("networkidle");
+  119 |   await viewButtonElems.first().waitFor();
+  120 |   const allProductTitles = await productHeadingElems.allTextContents();
+  121 |   for (let i = 0; i < allProductTitles.length; i++) {
+  122 |     console.log("arrayElement " + i + " : " + allProductTitles[i]);
+  123 |     if (allProductTitles[i] == "ADIDAS ORIGINAL") {
+  124 |       await viewButtonElems.nth(i).click();
+  125 |       break;
+  126 |     }
+  127 |   }
+  128 |
+  129 |   console.log("done");
+  130 | });
+  131 |
+  132 | test("@web UI Controls", async ({ browser }) => {
+  133 |   const context = await browser.newContext();
+  134 |   const page = await context.newPage();
+  135 |   const username = page.locator("input#username");
+  136 |   const password = page.locator("[name='password']");
+  137 |   const signIn = page.locator("input.btn-md");
+  138 |   const dropdownEle = page.locator("select.form-control");
+  139 |   const userCheckBoxEle = page.locator("input[value='user']");
+  140 |   const webBasedPopupEle = page.locator("button#okayBtn");
+  141 |   const termsEle = page.locator("#terms");
+  142 |   const blinkingLinkEle = page.locator("[href*='documents-request']");
+  143 |
+  144 |   await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+  145 |   await expect(page).toHaveTitle("LoginPage Practise | Rahul Shetty Academy");
+  146 |
+  147 |   await username.pressSequentially("rahulshettyacademy", { delay: 100 });
+  148 |   await password.pressSequentially("learnin", { delay: 100 });
+  149 |   await dropdownEle.selectOption("Consultant");
+  150 |   await userCheckBoxEle.click();
+> 151 |   await webBasedPopupEle.click({ delay: 5000 });
+      |                          ^ Error: locator.click: Target page, context or browser has been closed
+  152 |   //Assertions
+  153 |   console.log(await userCheckBoxEle.isChecked());
+  154 |   await expect(userCheckBoxEle).toBeChecked();
+  155 |   await termsEle.click();
+  156 |   expect(await termsEle.isChecked()).toBeTruthy();
+  157 |   await expect(blinkingLinkEle).toHaveAttribute("class", "blinkingText");
+  158 |
+  159 |   console.log("done");
+  160 | });
+  161 |
+  162 | test("Child Window Handles", async ({ browser }) => {
+  163 |   const context = await browser.newContext();
+  164 |   const page = await context.newPage();
+  165 |   const blinkingLinkEle = page.locator("[href*='documents-request']");
+  166 |   const username = page.locator("input#username");
+  167 |
+  168 |   await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+  169 |   await expect(page).toHaveTitle("LoginPage Practise | Rahul Shetty Academy");
+  170 |
+  171 |   //Listens for any new page pending, rejected, fulfilled--(Event listners should be before the event happens)
+  172 |   const [newPage] = await Promise.all([
+  173 |     context.waitForEvent("page"),
+  174 |     blinkingLinkEle.click(),
+  175 |   ]);
+  176 |
+  177 |   console.log(await newPage.locator(".red").textContent());
+  178 |   const mentorGmail = await newPage.locator(".red a").textContent();
+  179 |   console.log(mentorGmail);
+  180 |   await username.pressSequentially(mentorGmail, { delay: 100 });
+  181 |
+  182 |   console.log("done");
+  183 | });
+  184 |
+  185 | test("Login and order a product in RSAcademy website", async ({ browser }) => {
+  186 |   const context = await browser.newContext();
+  187 |   const page = await context.newPage();
+  188 |   const emailIdEle = page.locator("[placeholder='email@example.com']");
+  189 |   const passwordEle = page.locator("#userPassword");
+  190 |   const loginButton = page.locator("input#login");
+  191 |   const loginMessageEle = page.locator("div.toast-title");
+  192 |   const productAddedToCartMessage = page.locator("div[role='alert']");
+  193 |   const productElems = page.locator("div.card-body");
+  194 |   // const viewButtonElems = page.locator("button.w-40");
+  195 |   // const addToCartButtonEle = page.locator("button.w-10");
+  196 |   const cartButton = page.locator("button[routerlink*='cart']");
+  197 |   const countryOptions = page.locator(".ta-results");
+  198 |
+  199 |   await page.goto("https://rahulshettyacademy.com/client/");
+  200 |   await expect(page).toHaveTitle("Let's Shop");
+  201 |
+  202 |   //Login
+  203 |   await emailIdEle.pressSequentially("testmadu@gmail.com", { delay: 100 });
+  204 |   await passwordEle.pressSequentially("Testmadu@123", { delay: 100 });
+  205 |   await loginButton.click();
+  206 |   await expect(loginMessageEle).toHaveText("Login Successfully");
+  207 |
+  208 |   //search product and add to cart
+  209 |   await productElems.first().waitFor();
+  210 |   const allProductTitles = await productElems.locator("h5").allTextContents();
+  211 |   let selectedProductName = "";
+  212 |   let productAmt = "";
+  213 |   for (let i = 0; i < allProductTitles.length; i++) {
+  214 |     console.log("arrayElement " + i + " : " + allProductTitles[i]);
+  215 |     if (allProductTitles[i] == "ADIDAS ORIGINAL") {
+  216 |       selectedProductName = allProductTitles[i];
+  217 |       productAmt = await productElems
+  218 |         .locator(".text-muted")
+  219 |         .nth(i)
+  220 |         .textContent();
+  221 |       await productElems.locator(".w-10").nth(i).click({ delay: 500 });
+  222 |       await expect(productAddedToCartMessage).toHaveText(
+  223 |         "Product Added To Cart"
+  224 |       );
+  225 |       break;
+  226 |     }
+  227 |   }
+  228 |
+  229 |   if ((await cartButton.locator("label").textContent()) == 1) {
+  230 |     await cartButton.click();
+  231 |   }
+  232 |
+  233 |   await page.locator("div li").first().waitFor();
+  234 |   expect(
+  235 |     await page.locator("h3:has-text('" + selectedProductName + "')").isVisible()
+  236 |   ).toBeTruthy();
+  237 |   await page.locator("button:has-text('Checkout')").click();
+  238 |
+  239 |   //Checkout page
+  240 |   await page.locator("select.ddl").first().selectOption("01");
+  241 |   await page.locator("select.ddl").last().selectOption("18");
+  242 |   await page.locator("div.small input").first().fill("012");
+  243 |   await page.locator("input[class='input txt']").last().fill("Madesh");
+  244 |   await page.locator("div.small input").last().fill("rahulshettyacademy");
+  245 |   await page.locator("button:has-text('Apply Coupon')").click();
+  246 |   const couponSuccessMsg = await page
+  247 |     .locator("p[style='color: green;']")
+  248 |     .textContent();
+  249 |   console.log(couponSuccessMsg);
+  250 |   await expect(page.locator("p[style='color: green;']")).toHaveText(
+  251 |     "* Coupon Applied"
+```
